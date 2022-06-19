@@ -30,14 +30,19 @@ class Card:
         self.attributen = [colour,symbol,filling,amount]
         
     def isset(self, other1, other2):
+        samecounter = 0
         for i in range(4):
             if self.attributen[i] == other1.attributen[i] and self.attributen[i] == other2.attributen[i]:
+                samecounter += 1
                 pass
             elif self.attributen[i] != other1.attributen[i] and self.attributen[i] != other2.attributen[i] and other1.attributen[i] != other2.attributen[i]:
                 pass
             else:
                 return False
-        return True
+        if samecounter == 4: #voor als mensen willen valsspelen en zeggen dat 3 keer dezelfde kaart een set is
+            return False
+        else:
+            return True
 
 def createdeck():
     mogelijke_kaarten = []
@@ -48,7 +53,8 @@ def createdeck():
                 for f in range(3):
                     mogelijke_kaarten.append(Card(a,s,c,f))
     return mogelijke_kaarten
-score=0
+score_speler = 0
+score_pc = 0
 deck = createdeck()
 aflegstapel=[]
 #nogteeds zelfde start commando
@@ -80,7 +86,7 @@ def card_file(card):
 
 ### Initialise screen
 pygame.init()
-window = (600,600)
+window = (700,600)
 screen = pygame.display.set_mode(window)
 screen.fill((255, 255, 255))
 done = False
@@ -153,6 +159,8 @@ counter = 0
 pygame.time.set_timer(pygame.USEREVENT,100)
 achtergrondbar = pygame.image.load("rozebar.png")
 achtergrondbar = pygame.transform.scale(achtergrondbar,(50,300))
+achtergrondscore = pygame.image.load("blauwblok.png")
+achtergrondscore = pygame.transform.scale(achtergrondscore , (250,100))
 screen.blit(achtergrondbar, (450, 50))
 
 #achtergrondbar = screen.blit(screen, 450, 50, 50, 300)
@@ -209,20 +217,31 @@ klaar = False
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.USEREVENT and not klaar:
+            if counter == 0:
+                screen.blit(achtergrondbar, (450, 50))
+            
+            
             counter += 1
             laadbar = pygame.draw.rect(screen, pink, pygame.Rect(460,65,30, counter*stukjeerbij))
+            text_ss = font.render('jouw score :' + str(score_speler), True, black)
+            text_spc = font.render('computer score :' + str(score_pc) , True, black)
+            screen.blit( achtergrondscore , (450 , 440))
+            screen.blit(text_ss, (460,450))
+            screen.blit(text_spc, (460,500))
             pygame.display.flip()
+#            if counter == 0:
+#                screen.blit(achtergrondbar, (450, 50))
             
             if gekozenniveau == 1:
-                if counter == 300:
+                if counter >= 300:
                     klaar = True
                     break
             elif gekozenniveau == 2:
-                if counter == 150:
+                if counter >= 150:
                     klaar = True
                     break
             elif gekozenniveau == 3:
-                if counter == 50:
+                if counter >= 50:
                     klaar = True
                     break   
                 
@@ -291,10 +310,28 @@ while not done:
                            laden = pygame.transform.scale(laden, (100,200))
                            screen.blit(laden, (i*100, j*200))
                    pygame.display.flip()
-            elif event.key == pygame.K_s:
+            #elif event.key == pygame.K_s:
 #dit is de keuze die de computer maakt, nogmaals dit moet alleen gebeuren als er een keuze is maar dan doet ie het goed
 #Dit moet dus wel op een timer en niet op een keypress.
 #ook moeten we hier toevoegen dat de computer een punt krijgt, of dat er een punt van het totaal af gaat als dat makkelijker is                
+        if klaar:
+            if totale_controle() == []:
+                hand = vervangen()
+                getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                for i in range(3):
+                    speelbord[getallen[i]] = hand[i]
+            #hier zet het ding de nieuwe kaarten op de goede plek   
+                for j in range(3):
+                    for i in range(4):    
+                       laden = pygame.image.load(card_file(speelbord[i+4*j]))
+                       laden = pygame.transform.scale(laden, (100,200))
+                       screen.blit(laden, (i*100, j*200))
+                pygame.display.flip()
+                counter = 0
+                klaar = False
+            else:
+                getallen= []
+                keuze = []
                 kaart10 = startset[keuze_pc()[0]-1]
                 keuze.append(kaart10)
                 getallen.append(keuze_pc()[0]-1)
@@ -304,13 +341,18 @@ while not done:
                 kaart12 = startset[keuze_pc()[2]-1]
                 keuze.append(kaart12)
                 getallen.append(keuze_pc()[2]-1)
-                score -= 2
+                score_pc += 1
+                score_speler -= 1
                 print(keuze_pc())
+                
                 #probleem is nu nog wel dat, als we score gaan doen, dit niet hier al iets met score doet en er dus nog steeds Heel goed! geprint wordt.
                 #niet moeilijk op te lossen maar dat zit dus hier
         if len(keuze) == 3:  
             if keuze[0].isset(keuze[1], keuze[2]):
-                print('Heel goed!')
+                print('Heel goed!', len(deck))
+                #als er een set gekozen is dan reset de timer
+                counter = 0
+                klaar = False
                 if deck == []:
                     if aflegstapel==[]:
                         #print(score)
@@ -333,12 +375,23 @@ while not done:
                         laden = pygame.transform.scale(laden, (100,200))
                         screen.blit(laden, (i*100, j*200))
                 pygame.display.flip()
-                score += 1
+                score_speler += 1
                 
                 keuze = []
                 getallen=[]
             else:
                 print('fout')
+                counter += 10
+                #zodat de bar niet te lang wordt
+                if gekozenniveau == 1:
+                    if counter >= 300:
+                        counter = 300
+                elif gekozenniveau == 2:
+                    if counter >= 150:
+                        counter = 150
+                elif gekozenniveau == 3:
+                    if counter >= 50:
+                        counter = 50   
                 keuze = []
                 getallen=[]
                 #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
