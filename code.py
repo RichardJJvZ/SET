@@ -1,5 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 13 17:37:26 2022
+
+@author: esmee
+"""
+
 import random
 import pygame
+import sys
 
 amounts = ['1', '2', '3']
 symbols = ['diamond', 'oval', 'squiggle']
@@ -72,11 +80,15 @@ def card_file(card):
 
 ### Initialise screen
 pygame.init()
-window = (400,600)
+window = (600,600)
 screen = pygame.display.set_mode(window)
-screen.fill((110, 110, 110))
+screen.fill((255, 255, 255))
 done = False
 pygame.display.set_caption("Set")
+pink = (255,192,203)
+darkpink = (170, 51, 106)
+black = (0,0,0)
+gekozenniveau = 0
 ###
 
 ### card_file(card) geeft een string terug die de juiste kaart laadt
@@ -88,6 +100,79 @@ pygame.display.set_caption("Set")
 
 ### Add card to screen
 #screen.blit(kaart,kaartrect)
+
+
+#startscherm
+font = pygame.font.SysFont('Roboto', 35)
+text0 = font.render('Welkom bij Set!', True, darkpink)
+text1 = font.render('Klik op een van de 3 niveaus', True, black)
+text2 = font.render('Makkelijk', True, black)
+text3 = font.render('Gemiddeld', True, black)
+text4 = font.render('Moeilijk', True, black)
+
+screen.blit(text0, (210,50))
+screen.blit(text1, (150,100))
+
+
+button2 = pygame.draw.rect(screen, pink, (225, 200, 150, 75))
+screen.blit(text2, (240,220))
+
+button3 = pygame.draw.rect(screen, pink, (225, 320, 150, 75))
+screen.blit(text3, (240,340))
+
+button4 = pygame.draw.rect(screen, pink, (225, 440, 150, 75))
+screen.blit(text4, (240,460))
+
+pygame.display.flip()
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+            if 225 <= mouse[0] <= 375 and 200 <= mouse[1] <= 275:
+                print("Hoi")
+                gekozenniveau = 1
+                break
+            elif 225 <= mouse[0] <= 375 and 320 <= mouse[1] <= 395:
+                gekozenniveau = 2
+                break
+            elif 225 <= mouse[0] <= 375 and 440 <= mouse[1] <= 515:
+                gekozenniveau = 3
+                break
+    if gekozenniveau != 0:
+        screen.fill((255, 255, 255))
+        break
+#eind startscherm
+
+#begin code timer
+clock = pygame.time.Clock()
+counter = 0
+pygame.time.set_timer(pygame.USEREVENT,100)
+achtergrondbar = pygame.image.load("rozebar.png")
+achtergrondbar = pygame.transform.scale(achtergrondbar,(50,300))
+screen.blit(achtergrondbar, (450, 50))
+
+#achtergrondbar = screen.blit(screen, 450, 50, 50, 300)
+
+laadbar = pygame.draw.rect(screen, pink, pygame.Rect(0,0,0,0))
+pygame.display.flip()
+
+
+
+if gekozenniveau == 1:
+    stukjeerbij = 0.9
+elif gekozenniveau == 2:
+    stukjeerbij = 1.8
+elif gekozenniveau == 3:
+    stukjeerbij = 5.4
+    
+
+
+#eind code timer
+    
 
 startset = starten()
 speelbord = startset
@@ -119,10 +204,29 @@ def keuze_pc():
     return keuze
 
 getallen=[]
-#bij dit gedeelte begrijp ik om heel
+klaar = False
+
 while not done:
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.USEREVENT and not klaar:
+            counter += 1
+            laadbar = pygame.draw.rect(screen, pink, pygame.Rect(460,65,30, counter*stukjeerbij))
+            pygame.display.flip()
+            
+            if gekozenniveau == 1:
+                if counter == 300:
+                    klaar = True
+                    break
+            elif gekozenniveau == 2:
+                if counter == 150:
+                    klaar = True
+                    break
+            elif gekozenniveau == 3:
+                if counter == 50:
+                    klaar = True
+                    break   
+                
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
                 kaart1 = startset[0]
                 keuze.append(kaart1)
@@ -240,10 +344,10 @@ while not done:
                 #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
                 #maar dat is misschien onnodig moeilijk
             
-                
+            
         if event.type == pygame.QUIT:
             done = True
             pygame.quit()
-
+            sys.exit()
 
 
