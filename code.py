@@ -264,7 +264,8 @@ def keuze_pc():
     return keuze
 
 getallen=[]
-klaar = False
+klaar = False #de timer die op is
+eindscherm = True
 
 while not done:
     for event in pygame.event.get():
@@ -293,9 +294,9 @@ while not done:
                     klaar = True
                     break
             elif gekozenniveau == 3:
-                if counter >= 50:
+                if counter >= 5:
                     klaar = True
-                    break   
+                    break
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
@@ -417,11 +418,25 @@ while not done:
 #ook moeten we hier toevoegen dat de computer een punt krijgt, of dat er een punt van het totaal af gaat als dat makkelijker is                
         if klaar:
             if totale_controle() == []:
+                if deck == []:
+                    if aflegstapel==[]:
+                        #print(score)
+                        #hij print nu wel een score maar blijft doorlopen, verder makkelijk aan te passen maar ik ben klaar voor de dag
+                        done = True
+                        #hier willen we zeggen dat het spel stopt. Goed nieuws we mogen stoppen als deck leeg is en niet pas als er geen sets meer zijn.
+                        #misschien kunnen we hier toevoegen iets van Print("Score :" + Score)
+                        #dit moeten we dan waarschijnlijk wel weer inladen dus.
+                        #ik weet nog niet of dit werkt eigenlijk want heb nog niet op dit punt gezeten
+                        #ja het werkt
+                    else:
+                        deck = aflegstapel
+                        aflegstapel = []
                 hand = vervangen()
                 getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                screen.blit(tabletop, (0,0))
                 for i in range(3):
                     speelbord[getallen[i]] = hand[i]
-            #hier zet het ding de nieuwe kaarten op de goede plek   
+                #hier zet het ding de nieuwe kaarten op de goede plek   
                 for j in range(3):
                     for i in range(4):    
                        laden = pygame.image.load(card_file(speelbord[i+4*j]))
@@ -429,7 +444,7 @@ while not done:
                        screen.blit(laden, (i*110 + 20, j*210 + 20))
                        
                 makenumbers()
-                pygame.display.flip()
+#                pygame.display.flip()
                 counter = 0
                 klaar = False
             else:
@@ -460,7 +475,9 @@ while not done:
                     if aflegstapel==[]:
                         #print(score)
                         #hij print nu wel een score maar blijft doorlopen, verder makkelijk aan te passen maar ik ben klaar voor de dag
-                        break #hier willen we zeggen dat het spel stopt. Goed nieuws we mogen stoppen als deck leeg is en niet pas als er geen sets meer zijn.
+                        done = True
+                        break
+                        #hier willen we zeggen dat het spel stopt. Goed nieuws we mogen stoppen als deck leeg is en niet pas als er geen sets meer zijn.
                         #misschien kunnen we hier toevoegen iets van Print("Score :" + Score)
                         #dit moeten we dan waarschijnlijk wel weer inladen dus.
                         #ik weet nog niet of dit werkt eigenlijk want heb nog niet op dit punt gezeten
@@ -501,7 +518,57 @@ while not done:
                 getallen=[]
                 #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
                 #maar dat is misschien onnodig moeilijk
+    #hier nieuw keuze scherm
+    while done:
+        while eindscherm:
+            screen.fill((0, 0, 0))
+            pygame.display.flip()
+            #hier eindscherm maken
+            #blit, je score is, jouw score tegen computer score
+            # blit knop voor nog een keer
+            #als je hebt geklikt op nog een keer dan ga naar beginscherm, hieronder nog een keer geblit
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    eindscherm = False
+                    screen.fill(255, 255, 255)
+                    screen.blit(text0, (210,50))
+                    screen.blit(text1, (150,100))
 
+
+                    button2 = pygame.draw.rect(screen, pink, (225, 200, 150, 75))
+                    screen.blit(text2, (240,220))
+
+                    button3 = pygame.draw.rect(screen, pink, (225, 320, 150, 75))
+                    screen.blit(text3, (240,340))
+
+                    button4 = pygame.draw.rect(screen, pink, (225, 440, 150, 75))
+                    screen.blit(text4, (240,460))
+
+                    pygame.display.flip()
+
+        for event in pygame.event.get():
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse = pygame.mouse.get_pos()
+                        if 225 <= mouse[0] <= 375 and 200 <= mouse[1] <= 275:
+                            print("Hoi")
+                            gekozenniveau = 1
+                            break
+                        elif 225 <= mouse[0] <= 375 and 320 <= mouse[1] <= 395:
+                            gekozenniveau = 2
+                            break
+                        elif 225 <= mouse[0] <= 375 and 440 <= mouse[1] <= 515:
+                            gekozenniveau = 3
+                            break
+                if gekozenniveau != 0:
+                    screen.fill((255, 255, 255))
+                    done = False
+                    eindscherm = True
+                    break 
 
         if event.type == pygame.QUIT:
             done = True
