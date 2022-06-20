@@ -519,11 +519,14 @@ while not done:
                 #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
                 #maar dat is misschien onnodig moeilijk
     #hier nieuw keuze scherm
+        if event.type == pygame.QUIT:
+            done = True
+            pygame.quit()
+            sys.exit()
     while done:
         screen.fill((0, 0, 0))
         pygame.display.flip()
         while eindscherm:
-            print('meh')
             #hier eindscherm maken
             #blit, je score is, jouw score tegen computer score
             # blit knop voor nog een keer
@@ -534,7 +537,7 @@ while not done:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.USEREVENT:
-                    print('best oke')
+                    print('noice')
                     if event.type == pygame.KEYDOWN:
                         print('close')
                         if event.key == pygame.K_1:
