@@ -472,13 +472,14 @@ while not done:
                 for i in range(3):
                     speelbord[getallen[i]] = hand[i]
                 #weer nieuwe bord inladen
+                screen.blit(tabletop, (0,0))
                 for j in range(3):
                     for i in range(4):    
                         laden = pygame.image.load(card_file(speelbord[i+4*j]))
                         laden = pygame.transform.scale(laden, (100,200))
                         screen.blit(laden, (i*110 + 20, j*210 + 20))
                 makenumbers()
-                pygame.display.flip()
+#                pygame.display.flip()
                 score_speler += 1
 
                 keuze = []
