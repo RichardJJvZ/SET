@@ -10,6 +10,9 @@ import random
 import pygame
 import sys
 
+
+testsnelheid = 5
+
 amounts = ['1', '2', '3']
 symbols = ['diamond', 'oval', 'squiggle']
 colours = ['green', 'purple', 'red']
@@ -294,7 +297,7 @@ while not done:
                     klaar = True
                     break
             elif gekozenniveau == 3:
-                if counter >= 5:
+                if counter >= testsnelheid:
                     klaar = True
                     break
 
@@ -512,8 +515,8 @@ while not done:
                     if counter >= 150:
                         counter = 150
                 elif gekozenniveau == 3:
-                    if counter >= 50:
-                        counter = 50   
+                    if counter >= testsnelheid:
+                        counter = testsnelheid   
                 keuze = []
                 getallen=[]
                 #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
