@@ -25,12 +25,33 @@ def computer_antwoord(lijst):
     return antwoord
 
 class Card:
+    """
+    
+    Attributes
+    ----------
+    
+    
+    Methods
+    ----------
+    """
 
     def __init__(self, colour, symbol, filling, amount):
-        """Deze methode initialiseert de kaarten met alle verschillende eigenschappen
-        
-        Input argumenten: kleur, symbool, vulling en hoeveelheid
-        Output wanneer er instances worden gemaakt, zoals in createdeck line 51.
+        """ Deze methode initialiseert de kaarten met alle verschillende eigenschappen
+        Parameters
+        ----------
+        colour : TYPE
+            DESCRIPTION.
+        symbol : TYPE
+            DESCRIPTION.
+        filling : TYPE
+            DESCRIPTION.
+        amount : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None. Output wanneer er instances worden gemaakt, zoals in createdeck.
+
         """
         self.attributen = [colour,symbol,filling,amount]
 
@@ -39,11 +60,11 @@ class Card:
         
         Parameters
         ----------
-        self: instance of class Card
+        self: instantie van de klasse Card
          
-        other1 : instance of class Card
+        other1 : instantie van de klasse Card
          
-        other2 : instance of class Card
+        other2 : instantie van de klasse Card
          
         Returns
         -------
@@ -65,6 +86,14 @@ class Card:
             return True
 
 def createdeck():
+    """ Maakt alle mogelijke 81 instances van de klasse Card.
+    
+    Returns
+    -------
+    mogelijke_kaarten : lijst
+        combineert alle mogelijkheden in de attributen en maakt zo alle instances van de klasse Card.
+
+    """
     mogelijke_kaarten = []
 
     for a in range(3):
@@ -75,6 +104,13 @@ def createdeck():
     return mogelijke_kaarten
 
 def makenumbers():
+    """ Maakt alle getallen voor op de kaarten en blit deze op het scherm. Is meermaals nodig, dus vandaar de functie.
+    
+    Returns
+    -------
+    None. Wordt meermaals gebruikt dus is grotendeels ter besparing van ruimte.
+
+    """
     getal1 = font.render('1', True, black)
     getal2 = font.render('2', True, black)
     getal3 = font.render('3', True, black)
@@ -106,18 +142,39 @@ score_speler = 0
 score_pc = 0
 deck = createdeck()
 aflegstapel=[]
+
 #nogteeds zelfde start commando
 def starten():
+    """ Pakt random 12 kaarten uit de deck.
+
+    Returns
+    -------
+    sample : lijst
+        12 willekeurige kaarten uit de deck.
+
+    """
     sample = random.sample(deck, k=12)
     for stukje in sample:
         deck.remove(stukje)
     return sample
+
+
 #als wij of de pc een set heeft gemaakt
 def aanvullen(): 
+    """ Vult 3 kaarten aan wanneer er een set is gevonden
+    
+    Returns
+    -------
+    trekken : TYPE
+        DESCRIPTION.
+
+    """
     trekken = random.sample(deck, k=3)
     for stukje in trekken:
         deck.remove(stukje)
     return trekken
+
+
 #als er geen set te maken is
 def vervangen():
         trekken = random.sample(deck, k=3)
@@ -127,6 +184,19 @@ def vervangen():
         return trekken
 
 def card_file(card):
+    """ Haalt aan de hand van de attributen van de kaart de goede kaart uit de zip.
+    
+    Parameters
+    ----------
+    card : insantie van het type Card
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
     out = ""
     attributen = card.attributen
     for i in range(4):
@@ -166,18 +236,18 @@ text2 = font.render('Makkelijk', True, black)
 text3 = font.render('Gemiddeld', True, black)
 text4 = font.render('Moeilijk', True, black)
 
-screen.blit(text0, (210,50))
-screen.blit(text1, (150,100))
+screen.blit(text0, (320,100))
+screen.blit(text1, (250,150))
 
 
-button2 = pygame.draw.rect(screen, pink, (225, 200, 150, 75))
-screen.blit(text2, (240,220))
+button2 = pygame.draw.rect(screen, pink, (330, 220, 150, 75))
+screen.blit(text2, (350,240))
 
-button3 = pygame.draw.rect(screen, pink, (225, 320, 150, 75))
-screen.blit(text3, (240,340))
+button3 = pygame.draw.rect(screen, pink, (330, 340, 150, 75))
+screen.blit(text3, (340,360))
 
-button4 = pygame.draw.rect(screen, pink, (225, 440, 150, 75))
-screen.blit(text4, (240,460))
+button4 = pygame.draw.rect(screen, pink, (330, 460, 150, 75))
+screen.blit(text4, (360,480))
 
 pygame.display.flip()
 
@@ -188,14 +258,13 @@ while True:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
-            if 225 <= mouse[0] <= 375 and 200 <= mouse[1] <= 275:
-                print("Hoi")
+            if 330 <= mouse[0] <= 480 and 220 <= mouse[1] <= 295:
                 gekozenniveau = 1
                 break
-            elif 225 <= mouse[0] <= 375 and 320 <= mouse[1] <= 395:
+            elif 330 <= mouse[0] <= 480 and 340 <= mouse[1] <= 415:
                 gekozenniveau = 2
                 break
-            elif 225 <= mouse[0] <= 375 and 440 <= mouse[1] <= 515:
+            elif 330 <= mouse[0] <= 480 and 460 <= mouse[1] <= 535:
                 gekozenniveau = 3
                 break
     if gekozenniveau != 0:
