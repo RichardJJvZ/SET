@@ -179,6 +179,12 @@ def main():
     
     #als er geen set te maken is
     def vervangen():
+            """
+        Een andere functie die bijna hetzelfde doet als aanvullen.
+        Nu kiezen we er alleen voor dat de kaarten die we weg halen op een andere stapel bewaren
+        Dit zorgt ervoor dat altijd evenveel sets in het spel ziiten
+        (tenzij natuurlijk bij het laatste speelbord geen set zit)
+            """
             trekken = random.sample(deck, k=3)
             for stukje in trekken:
                 aflegstapel.append(stukje)
@@ -307,6 +313,9 @@ def main():
     
     startset = starten()
     speelbord = startset
+    """
+    Hier wordt de eerste keer het bord geladen
+    """
     for j in range(3):
         for i in range(4):    
             laden = pygame.image.load(card_file(startset[i+4*j]))
@@ -319,9 +328,16 @@ def main():
     pygame.display.flip()
     
     keuze = []
+    """
+    Total_cotrole kijkt naar de elementen die op het speelbord liggen, vervolgens gaat 
+    het in een driedubbele loop alle mogelijke combinaties af
+    Dit gebeurt in de volgorde [1,2,3] [1,2,4] t/m [1,2,12]
+    Daarna loopt het tweede element een stapje. Dan gaat controleren we dus [1,3,4]
+    De functie geeft alle verzamelingen terug waarvoor de functie isset True returnt
+    """
     def totale_controle():
         sets=[]
-        for i in range(10):#moet dus 1t/m 10 zijn
+        for i in range(10):
             keuze1=i
             for j in range(i+1,11): #i+1 t/m 11
                 keuze2=j
@@ -331,49 +347,56 @@ def main():
                         sets.append([i+1,j+1,k+1])
         return sets
     def keuze_pc():
+        #de functie neemt het eerste element uit de lijst lijsten die we hebben gekregen uit
+        #totale_controle. In principe kan deze leeg zijn. Als dit voorkomt zorgen we dat we deze functie niet aanroepen
         keuze = totale_controle()[0]
         return keuze
     
     getallen=[]
-    klaar = False #de timer die op is
-    eindscherm = True
-    
+    klaar = False #als de timer op is dan zeggen we True, dus we moeten eerst
+    #aangeven dat de timer nog niet klaar is
+    #hier komt de main code voor het spel
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.USEREVENT and not klaar:
                 if counter == 0:
                     screen.blit(achtergrondbar, (600, 100))
+                    """hier laden we de achtergrond nog een keer
+                    anders krijgen we dat de getallen en de laadbar blijven
+                    staan nadat deze hadden moeten resetten"""
     
     
-                counter += 1
+                counter += 1 #de tijd verloopt een klein stukje, de clock tikt 
+                #10x per seconde.
                 laadbar = pygame.draw.rect(screen, black, pygame.Rect(610,115,30, counter*stukjeerbij))
                 text_ss = font.render('jouw score : ' + str(score_speler), True, black)
                 text_spc = font.render('computer score : ' + str(score_pc) , True, black)
                 screen.blit(achtergrondscore , (500 , 440))
                 screen.blit(text_ss, (510,450))
                 screen.blit(text_spc, (510,500))
-                pygame.display.flip()
-    #            if counter == 0:
-    #                screen.blit(achtergrondbar, (450, 50))
+                pygame.display.flip() #hier pas de display flippen anders heb je een frame
+                #waarin niet alles geladen is.
     
                 if gekozenniveau == 1:
-                    if counter >= 300:
+                    if counter >= 300:#30s. om een set te vinden
                         klaar = True
                         break
                 elif gekozenniveau == 2:
-                    if counter >= 150:
+                    if counter >= 150:#15seconde om een set te vinden
                         klaar = True
                         break
                 elif gekozenniveau == 3:
-                    if counter >= 5:
+                    #tijdens het testen van eindscherm naar 5 veranderd zodat je snel
+                    #door het spel heen bent
+                    if counter >= 5: #5 seconde om een set te vinden. Succes!
                         klaar = True
                         break
-    
+                    #lang stuk code dat alle keys afgaat
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    kaart1 = startset[0]
-                    keuze.append(kaart1)
-                    getallen.append(0)
+                    kaart1 = startset[0] #als we op "1" klikken dan keizen we de eerste kaart
+                    keuze.append(kaart1) #deze wordt geplakt achteraan de verzameling keuze
+                    getallen.append(0) #we moeten onthouden welke keuze we hebben gemaakt voor het aanvullen
                     geselecteerd = pygame.image.load('selectedcard.png')
                     geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
                     screen.blit(geselecteerd, (20,20))
@@ -483,43 +506,40 @@ def main():
                                screen.blit(laden, (i*110 + 20, j*210 + 20))
                        makenumbers()
                        pygame.display.flip()
-                #elif event.key == pygame.K_s:
     #dit is de keuze die de computer maakt, nogmaals dit moet alleen gebeuren als er een keuze is maar dan doet ie het goed
     #Dit moet dus wel op een timer en niet op een keypress.
     #ook moeten we hier toevoegen dat de computer een punt krijgt, of dat er een punt van het totaal af gaat als dat makkelijker is                
-            if klaar:
-                if totale_controle() == []:
-                    if deck == []:
-                        if aflegstapel==[]:
-                            #print(score)
-                            #hij print nu wel een score maar blijft doorlopen, verder makkelijk aan te passen maar ik ben klaar voor de dag
+            if klaar: #klaar betekent timer is klaar
+                if totale_controle() == []: #als er geen keuze te maken is dan willen we vervangen
+                    if deck == []: #als we niet kunnen vervangen dan kijken we of we kaarten opzij hebben gelegd
+                        if aflegstapel==[]: #als ook de aflegstapel leeg is dan willen we stoppen
                             done = True
-                            #hier willen we zeggen dat het spel stopt. Goed nieuws we mogen stoppen als deck leeg is en niet pas als er geen sets meer zijn.
-                            #misschien kunnen we hier toevoegen iets van Print("Score :" + Score)
-                            #dit moeten we dan waarschijnlijk wel weer inladen dus.
-                            #ik weet nog niet of dit werkt eigenlijk want heb nog niet op dit punt gezeten
-                            #ja het werkt
                         else:
                             deck = aflegstapel
                             aflegstapel = []
-                    hand = vervangen()
-                    getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
-                    screen.blit(tabletop, (0,0))
-                    for i in range(3):
-                        speelbord[getallen[i]] = hand[i]
+                    if not done:
+                        hand = vervangen()
+                        getallen=[0,1,2] #de plek waarop we vervangen zijn de eerste 3 kaarten
+                        screen.blit(tabletop, (0,0))
+                        for i in range(3):
+                            speelbord[getallen[i]] = hand[i]
                 #hier zet het ding de nieuwe kaarten op de goede plek   
                     for j in range(3):
                         for i in range(4):    
                            laden = pygame.image.load(card_file(speelbord[i+4*j]))
                            laden = pygame.transform.scale(laden, (100,200))
                            screen.blit(laden, (i*110 + 20, j*210 + 20))
-                               
+                    #het scherm flipt hier nog niet anders is het lelijk omdat
+                    #een deel van de elementen nog neit opnieuw geladen is
                     makenumbers()
-    #                pygame.display.flip()
-                    counter = 0
-                    klaar = False
-                else:
+                    counter = 0 #tijd reset
+                    klaar = False #Boolean die aangeeft of de tijd om is reset
+                else: #Als er wel een keuze te maken is kies dan de eerste optie
                     getallen= []
+                    """
+                    Hier eerst de plekken en de te controlleren kaarten resetten
+                    Anders krijg je een probleem als de speler midden in een keuze zit
+                    """
                     keuze = []
                     kaart10 = startset[keuze_pc()[0]-1]
                     keuze.append(kaart10)
@@ -529,10 +549,15 @@ def main():
                     getallen.append(keuze_pc()[1]-1)
                     kaart12 = startset[keuze_pc()[2]-1]
                     keuze.append(kaart12)
-                    getallen.append(keuze_pc()[2]-1)
-                    score_pc += 1
-                    score_speler -= 1
-                    print(keuze_pc())
+                    getallen.append(keuze_pc()[2]-1)#hier maken we de drie keuzes van kaarten van de computer
+                    
+                    score_pc += 1 #de computer heeft een set maar dit gaan we ook nog controlleren
+                    #we geven hier wel alvast de punten aan de computer want dan kunnen we nu naar
+                    #hetzelfde loopje als een speler keuze
+                    score_speler -= 1#er gaat een punt van de speler af zodat
+                    #we dezelfde volgende stap kunnen doen van het controleren of het 
+                    #een set is. Als het een set is krijgt de speler namelijk een punt
+                    print(keuze_pc())#print commando dat nog weg kan
     
                     #probleem is nu nog wel dat, als we score gaan doen, dit niet hier al iets met score doet en er dus nog steeds Heel goed! geprint wordt.
                     #niet moeilijk op te lossen maar dat zit dus hier
@@ -574,8 +599,10 @@ def main():
                     getallen=[]
                 else:
                     print('fout')
+                    #als je een verkeerde set kiest dan gaat er een seconde van je denktijd af
                     counter += 10
-                    #zodat de bar niet te lang wordt
+                    #om de bar niet te lang te maken en de if statement bovenaan niet
+                    #oneindig door te laten lopen hier terug zetten op de max
                     if gekozenniveau == 1:
                         if counter >= 300:
                             counter = 300
@@ -587,9 +614,6 @@ def main():
                             counter = 50   
                     keuze = []
                     getallen=[]
-                    #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
-                    #maar dat is misschien onnodig moeilijk
-        #hier nieuw keuze scherm
             if event.type == pygame.QUIT:
                 done = True
                 pygame.quit()
@@ -600,13 +624,16 @@ def main():
         button_aftiteling = pygame.draw.rect(screen, pink, (350, 240, 150, 75))
         aftiteling = font.render('Opnieuw spelen', True, black)
         screen.blit(aftiteling, (350,250))
+        clock.tick(10)
         pygame.display.flip()
         
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_aftiteling = pygame.mouse.get_pos()
             if 350 <= mouse_aftiteling[0] <= 500 and 240 <= mouse_aftiteling[1] <= 315:
-    
+                print('gehaald')
+                #als het goed is moeten we done weer op False zetten
+                done = False
                 return 
             
         if event.type == pygame.QUIT:
