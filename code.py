@@ -436,13 +436,13 @@ while not done:
                 screen.blit(tabletop, (0,0))
                 for i in range(3):
                     speelbord[getallen[i]] = hand[i]
-                #hier zet het ding de nieuwe kaarten op de goede plek   
+            #hier zet het ding de nieuwe kaarten op de goede plek   
                 for j in range(3):
                     for i in range(4):    
                        laden = pygame.image.load(card_file(speelbord[i+4*j]))
                        laden = pygame.transform.scale(laden, (100,200))
                        screen.blit(laden, (i*110 + 20, j*210 + 20))
-                       
+                           
                 makenumbers()
 #                pygame.display.flip()
                 counter = 0
@@ -520,31 +520,41 @@ while not done:
                 #maar dat is misschien onnodig moeilijk
     #hier nieuw keuze scherm
     while done:
+        screen.fill((0, 0, 0))
+        pygame.display.flip()
         while eindscherm:
-            screen.fill((0, 0, 0))
-            pygame.display.flip()
+
             #hier eindscherm maken
             #blit, je score is, jouw score tegen computer score
             # blit knop voor nog een keer
             #als je hebt geklikt op nog een keer dan ga naar beginscherm, hieronder nog een keer geblit
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    eindscherm = False
-                    screen.fill(255, 255, 255)
-                    screen.blit(text0, (210,50))
-                    screen.blit(text1, (150,100))
-
-
-                    button2 = pygame.draw.rect(screen, pink, (225, 200, 150, 75))
-                    screen.blit(text2, (240,220))
-
-                    button3 = pygame.draw.rect(screen, pink, (225, 320, 150, 75))
-                    screen.blit(text3, (240,340))
-
-                    button4 = pygame.draw.rect(screen, pink, (225, 440, 150, 75))
-                    screen.blit(text4, (240,460))
-
-                    pygame.display.flip()
+            if event.type == pygame.USEREVENT:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        print('yeah')
+                        eindscherm = False
+                        screen.fill(255, 255, 255)
+                        screen.blit(text0, (210,50))
+                        screen.blit(text1, (150,100))
+    
+    
+                        button2 = pygame.draw.rect(screen, pink, (225, 200, 150, 75))
+                        screen.blit(text2, (240,220))
+    
+                        button3 = pygame.draw.rect(screen, pink, (225, 320, 150, 75))
+                        screen.blit(text3, (240,340))
+    
+                        button4 = pygame.draw.rect(screen, pink, (225, 440, 150, 75))
+                        screen.blit(text4, (240,460))
+                        
+                        
+                        
+                        gekozenniveau = 0
+    
+                        pygame.display.flip()
 
         for event in pygame.event.get():
             while True:
