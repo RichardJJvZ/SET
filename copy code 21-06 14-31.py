@@ -26,14 +26,14 @@ def main():
                            pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,
                            pygame.K_9,pygame.K_0,pygame.K_MINUS,
                            pygame.K_EQUALS]
-    
+
     def computer_antwoord(lijst):
         if lijst == []:
             antwoord= False
         else:
             antwoord=lijst[0]
         return antwoord
-        
+    
     class Card:
         """
         
@@ -403,7 +403,19 @@ def main():
                 elif event.key == pygame.K_EQUALS:
                     nr = 11
                 #Deze moeten we denk ik eerst doen als de tijd om is en dan specifiek
-       
+                elif event.key == pygame.K_a:
+                    print(totale_controle() , len(deck))
+                    #deze vooral doen dus want dit vervangt de eerste drie kaarten (volgensmij op de goede manier)
+                    if totale_controle() == []:
+                       hand = vervangen()
+                       getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                       for i in range(3):
+                           speelbord[getallen[i]] = hand[i]
+                    #hier zet het ding de nieuwe kaarten op de goede plek   
+                       herladen()
+                       pygame.display.flip()
+                       
+                       
                 kaart1 = speelbord[nr]
                 if kaart1 in keuze:
                     keuze.remove(kaart1)
