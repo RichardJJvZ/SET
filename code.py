@@ -26,14 +26,6 @@ def main():
                            pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,
                            pygame.K_9,pygame.K_0,pygame.K_MINUS,
                            pygame.K_EQUALS]
-    
-    def computer_antwoord(lijst):
-        if lijst == []:
-            antwoord= False
-        else:
-            antwoord=lijst[0]
-        return antwoord
-        
     class Card:
         """
         
@@ -81,17 +73,13 @@ def main():
             bool.
             """
             
-            samecounter = 0
             for i in range(4):
                 if self.attributen[i] == other1.attributen[i] and self.attributen[i] == other2.attributen[i]:
-                    samecounter += 1
                     pass
                 elif self.attributen[i] != other1.attributen[i] and self.attributen[i] != other2.attributen[i] and other1.attributen[i] != other2.attributen[i]:
                     pass
                 else:
                     return False
-            if samecounter == 4: #voor als mensen willen valsspelen en zeggen dat 3 keer dezelfde kaart een set is
-                return False
             else:
                 return True
     
@@ -149,11 +137,15 @@ def main():
     
 
     score_speler = 0
+    """
+    Score_speler en score_pc worden voor het spel op 0 gezet zodat nog een keer
+    spelen goed werkt en neit door score door laat tellen
+    """
     score_pc = 0
     deck = createdeck()
-    aflegstapel=[]
+    aflegstapel=[] #een aflegstapel wordt gedefinieerd zodat het spel wat
+    #langer duurt als er vaak geen set is
     
-    #nogteeds zelfde start commando
     def starten():
         """ Pakt random 12 kaarten uit de deck.
     
@@ -188,6 +180,11 @@ def main():
     #als er geen set te maken is
     def vervangen():
             trekken = random.sample(deck, k=3)
+            """
+            vult 3 kaarten aan als er geen set te maken is met de kaarten op
+            het speelveld. Als dit het geval is willen we wel de eerste 3
+            kaarten bewaren zodat we op het einde nog kunnen aanvullen
+            """
             for stukje in trekken:
                 aflegstapel.append(stukje)
                 deck.remove(stukje)
@@ -220,6 +217,7 @@ def main():
     screen.fill((255, 255, 255))
     done = False
     pygame.display.set_caption("Set")
+    #naam van kleuren de bijbehorende waarde gegeven voor gemak later bij kiezen van een kleur
     pink = (255,192,203)
     darkpink = (170, 51, 106)
     black = (0,0,0)
@@ -259,9 +257,15 @@ def main():
     button4 = pygame.draw.rect(screen, pink, (330, 460, 150, 75))
     screen.blit(text4, (360,480))
     
-    pygame.display.flip()
+    pygame.display.flip() #hier wordt het startscherm geprojecteert op het scherm
     
     while True:
+        """
+        Er wordt over het startscherm heen geprint zodra er een keuze is gemaakt
+        voor het niveau. Hiervoor wordt gekeken naar de positie van de muis.
+        Zodra de keuze is gemaakt krijgt gekozen niveau de bijbehorende waarde
+        en gaan we uit deze loop met een break commando
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -290,14 +294,13 @@ def main():
     achtergrondbar = pygame.transform.scale(achtergrondbar,(50,300))
     achtergrondscore = pygame.image.load("zwartblok.png")
     achtergrondscore = pygame.transform.scale(achtergrondscore , (250,100))
-    #screen.blit(achtergrondbar, (450, 50))
     
-    #achtergrondbar = screen.blit(screen, 450, 50, 50, 300)
     
     laadbar = pygame.draw.rect(screen, pink, pygame.Rect(0,0,0,0))
     pygame.display.flip()
     
-    
+# lengte van het increment gekozen zodat een volle laadbar overeen komt met een
+# timer die klaar is    
     if gekozenniveau == 1:
         stukjeerbij = 0.9
     elif gekozenniveau == 2:
@@ -315,7 +318,14 @@ def main():
     
     startset = starten()
     speelbord = startset
-    def herladen():        
+    
+    def herladen():
+        """
+        Een korte definitie voor het herladen van de kaarten die op dit moment
+        op het speelveld liggen zodat deze later aangeroepen kan worden voor
+        beter overzicht
+
+        """        
         for j in range(3):
             for i in range(4):    
                 laden = pygame.image.load(card_file(startset[i+4*j]))
@@ -323,7 +333,7 @@ def main():
                 screen.blit(laden, (i*110 + 20, j*210 + 20))
         
         makenumbers()
-    herladen()    
+    herladen() #flip    
         ### Update display
     pygame.display.flip()
     
@@ -423,8 +433,10 @@ def main():
     #Dit moet dus wel op een timer en niet op een keypress.
     #ook moeten we hier toevoegen dat de computer een punt krijgt, of dat er een punt van het totaal af gaat als dat makkelijker is                
             if klaar:
+                print(totale_controle())
                 if totale_controle() == []:
                     if deck == []:
+                        
                         if aflegstapel==[]:
                             #print(score)
                             #hij print nu wel een score maar blijft doorlopen, verder makkelijk aan te passen maar ik ben klaar voor de dag
@@ -438,11 +450,20 @@ def main():
                         else:
                             deck = aflegstapel
                             aflegstapel = []
+                            """
                             hand = vervangen()
                             getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
                             screen.blit(tabletop, (0,0))
                             for i in range(3):
                                 speelbord[getallen[i]] = hand[i]
+                            """
+                    else:
+                        hand = vervangen()
+                        getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                        screen.blit(tabletop, (0,0))
+                        for i in range(3):
+                            speelbord[getallen[i]] = hand[i]
+                    
                 #hier zet het ding de nieuwe kaarten op de goede plek   
                     herladen()
     #                pygame.display.flip()
@@ -472,6 +493,7 @@ def main():
                     #als er een set gekozen is dan reset de timer
                     counter = 0
                     klaar = False
+                    score_speler += 1
                     if deck == []:
                         if aflegstapel==[]:
                             #print(score)
@@ -493,7 +515,7 @@ def main():
                     screen.blit(tabletop, (0,0))
                     herladen()
     #                pygame.display.flip()
-                    score_speler += 1
+                    
     
                     keuze = []
                     getallen=[]
@@ -525,18 +547,25 @@ def main():
     
     while done:
         screen.fill((255, 255, 255))
-        button_aftiteling = pygame.draw.rect(screen, pink, (350, 240, 150, 75))
+        button_eindscore = pygame.draw.rect(screen, pink, (150, 40, 500, 75))
+        eindscore = font.render('score computer :' + str(score_pc) + '     score speler :' + str(score_speler), True, black)
+        screen.blit(eindscore, (190,50))
+        button_aftiteling = pygame.draw.rect(screen, pink, (200, 240, 400, 75))
         aftiteling = font.render('Opnieuw spelen', True, black)
-        screen.blit(aftiteling, (350,250))
+        screen.blit(aftiteling, (300,270))
+        stop_knop = pygame.draw.rect(screen, pink, (200, 440, 400, 75))
+        stoppen = font.render('Spel afsluiten', True, black)
+        screen.blit(stoppen, (300,470))
         pygame.display.flip()
         
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print('noice')
                 mouse_aftiteling = pygame.mouse.get_pos()
-                if 350 <= mouse_aftiteling[0] <= 500 and 240 <= mouse_aftiteling[1] <= 315:
+                if 200 <= mouse_aftiteling[0] <= 600 and 240 <= mouse_aftiteling[1] <= 315:
                     return main()
-            
+                elif 200 <= mouse_aftiteling[0] <= 600 and 440 <= mouse_aftiteling[1] <= 515:
+                    pygame.quit()
+                    sys.exit()
         if event.type == pygame.QUIT:
             done = True
             pygame.quit()
