@@ -18,7 +18,15 @@ fillings = ['empty', 'shaded', 'filled']
 eigenschappen = ['colours', 'symbols', 'fillings', 'amounts']
 
 def main():
-    
+    """
+    geaccepteerde input definieren zodat we dit als tweede eis kunnen stellen
+    aan de kaart selectie zodat het programma daar geen bug vertoont
+    """
+    geaccepteerde_input = [pygame.K_1,pygame.K_2,pygame.K_3,pygame.K_4,
+                           pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,
+                           pygame.K_9,pygame.K_0,pygame.K_MINUS,
+                           pygame.K_EQUALS]
+
     def computer_antwoord(lijst):
         if lijst == []:
             antwoord= False
@@ -368,104 +376,31 @@ def main():
                     if counter >= 5:
                         klaar = True
                         break
-    
-            elif event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN and event.key in geaccepteerde_input:
                 if event.key == pygame.K_1:
-                    kaart1 = startset[0]
-                    keuze.append(kaart1)
-                    getallen.append(0)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (20,20))
-                    pygame.display.flip()
+                    nr = 0
                 elif event.key == pygame.K_2:
-                    kaart2 = startset[1]
-                    keuze.append(kaart2)
-                    getallen.append(1)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd,(130,20))
-                    pygame.display.flip()
+                    nr = 1
                 elif event.key == pygame.K_3:
-                    kaart3 = startset[2]
-                    keuze.append(kaart3)
-                    getallen.append(2)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (240,20))
-                    pygame.display.flip()
+                    nr = 2
                 elif event.key == pygame.K_4:
-                    kaart4 = startset[3]
-                    keuze.append(kaart4)
-                    getallen.append(3)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (350,20))
-                    pygame.display.flip()
+                    nr = 3
                 elif event.key == pygame.K_5:
-                    kaart5 = startset[4]
-                    keuze.append(kaart5)
-                    getallen.append(4)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (20,230))
-                    pygame.display.flip()
+                    nr = 4
                 elif event.key == pygame.K_6:
-                    kaart6 = startset[5]
-                    keuze.append(kaart6)
-                    getallen.append(5)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (130,230))
-                    pygame.display.flip()
+                    nr = 5
                 elif event.key == pygame.K_7:
-                    kaart7 = startset[6]
-                    keuze.append(kaart7)
-                    getallen.append(6)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (240,230))
-                    pygame.display.flip()
+                    nr = 6
                 elif event.key == pygame.K_8:
-                    kaart8 = startset[7]
-                    keuze.append(kaart8)
-                    getallen.append(7)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (350,230))
-                    pygame.display.flip()
+                    nr = 7
                 elif event.key == pygame.K_9:
-                    kaart9 = startset[8]
-                    keuze.append(kaart9)
-                    getallen.append(8)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (20,440))
-                    pygame.display.flip()
+                    nr = 8
                 elif event.key == pygame.K_0:
-                    kaart10 = startset[9]
-                    keuze.append(kaart10)
-                    getallen.append(9)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (130,440))
-                    pygame.display.flip()
+                    nr = 9
                 elif event.key == pygame.K_MINUS:
-                    kaart11 = startset[10]
-                    keuze.append(kaart11)
-                    getallen.append(10)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (240,440))
-                    pygame.display.flip()
+                    nr = 10
                 elif event.key == pygame.K_EQUALS:
-                    kaart12 = startset[11]
-                    keuze.append(kaart12)
-                    getallen.append(11)
-                    geselecteerd = pygame.image.load('selectedcard.png')
-                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
-                    screen.blit(geselecteerd, (350,440))
-                    pygame.display.flip()
+                    nr = 11
                 #Deze moeten we denk ik eerst doen als de tijd om is en dan specifiek
                 elif event.key == pygame.K_a:
                     print(totale_controle() , len(deck))
@@ -483,6 +418,22 @@ def main():
                                screen.blit(laden, (i*110 + 20, j*210 + 20))
                        makenumbers()
                        pygame.display.flip()
+                       
+                       
+                kaart1 = speelbord[nr]
+                if kaart1 in keuze:
+                    keuze.remove(kaart1)
+                    getallen.remove(nr)
+                    kaartje = pygame.image.load(card_file(speelbord[nr]))
+                    screen.blit(kaartje, (20 + 110 * (nr%4), 20 + 210 * (nr//4)))
+                    pygame.display.flip()
+                else:    
+                    keuze.append(kaart1)
+                    getallen.append(nr)
+                    geselecteerd = pygame.image.load('selectedcard.png')
+                    geselecteerd = pygame.transform.scale(geselecteerd, (100,200))
+                    screen.blit(geselecteerd, (20 + 110 * (nr%4), 20 + 210 * (nr//4)))
+                pygame.display.flip()
                 #elif event.key == pygame.K_s:
     #dit is de keuze die de computer maakt, nogmaals dit moet alleen gebeuren als er een keuze is maar dan doet ie het goed
     #Dit moet dus wel op een timer en niet op een keypress.
@@ -494,6 +445,7 @@ def main():
                             #print(score)
                             #hij print nu wel een score maar blijft doorlopen, verder makkelijk aan te passen maar ik ben klaar voor de dag
                             done = True
+                            break
                             #hier willen we zeggen dat het spel stopt. Goed nieuws we mogen stoppen als deck leeg is en niet pas als er geen sets meer zijn.
                             #misschien kunnen we hier toevoegen iets van Print("Score :" + Score)
                             #dit moeten we dan waarschijnlijk wel weer inladen dus.
@@ -502,11 +454,11 @@ def main():
                         else:
                             deck = aflegstapel
                             aflegstapel = []
-                    hand = vervangen()
-                    getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
-                    screen.blit(tabletop, (0,0))
-                    for i in range(3):
-                        speelbord[getallen[i]] = hand[i]
+                            hand = vervangen()
+                            getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                            screen.blit(tabletop, (0,0))
+                            for i in range(3):
+                                speelbord[getallen[i]] = hand[i]
                 #hier zet het ding de nieuwe kaarten op de goede plek   
                     for j in range(3):
                         for i in range(4):    
@@ -584,7 +536,15 @@ def main():
                             counter = 150
                     elif gekozenniveau == 3:
                         if counter >= 50:
-                            counter = 50   
+                            counter = 50
+                            
+                    # kaarten terug blitten
+                    for j in range(3):
+                        for i in range(4):    
+                            laden = pygame.image.load(card_file(speelbord[i+4*j]))
+                            laden = pygame.transform.scale(laden, (100,200))
+                            screen.blit(laden, (i*110 + 20, j*210 + 20))
+                    makenumbers()
                     keuze = []
                     getallen=[]
                     #ik weet ook niet of we hier nog iets mee moeten met punt/tijdsaftrek. (1sec eraf?)
@@ -602,12 +562,12 @@ def main():
         screen.blit(aftiteling, (350,250))
         pygame.display.flip()
         
-        
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_aftiteling = pygame.mouse.get_pos()
-            if 350 <= mouse_aftiteling[0] <= 500 and 240 <= mouse_aftiteling[1] <= 315:
-    
-                return 
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print('noice')
+                mouse_aftiteling = pygame.mouse.get_pos()
+                if 350 <= mouse_aftiteling[0] <= 500 and 240 <= mouse_aftiteling[1] <= 315:
+                    return main()
             
         if event.type == pygame.QUIT:
             done = True
