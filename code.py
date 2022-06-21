@@ -575,15 +575,22 @@ def main():
         
         """
         screen.fill((255, 255, 255))
-        button_eindscore = pygame.draw.rect(screen, pink, (150, 40, 500, 75))
-        eindscore = font.render('score computer :' + str(score_pc) + '     score speler :' + str(score_speler), True, black)
-        screen.blit(eindscore, (190,50))
-        button_aftiteling = pygame.draw.rect(screen, pink, (200, 240, 400, 75))
+        if score_pc > score_speler:
+            resultaat = font.render('Helaas, verloren!', True, darkpink)
+        elif score_pc < score_speler:
+            resultaat = font.render('Gewonnen, goed zo!', True, darkpink)
+        else: 
+            resultaat = font.render('Gelijkspel!', True, darkpink)
+        
+        screen.blit(resultaat, (320,100))
+        eindscore = font.render('score computer : ' + str(score_pc) + '     score speler : ' + str(score_speler), True, black)
+        screen.blit(eindscore, (200,175))
+        button_aftiteling = pygame.draw.rect(screen, pink, (300, 290, 250, 75))
         aftiteling = font.render('Opnieuw spelen', True, black)
-        screen.blit(aftiteling, (300,270))
-        stop_knop = pygame.draw.rect(screen, pink, (200, 440, 400, 75))
+        screen.blit(aftiteling, (325,310))
+        stop_knop = pygame.draw.rect(screen, pink, (300, 430, 250, 75))
         stoppen = font.render('Spel afsluiten', True, black)
-        screen.blit(stoppen, (300,470))
+        screen.blit(stoppen, (340,450))
         pygame.display.flip()
         
         for event in pygame.event.get():
@@ -592,9 +599,9 @@ def main():
             """
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_aftiteling = pygame.mouse.get_pos()
-                if 200 <= mouse_aftiteling[0] <= 600 and 240 <= mouse_aftiteling[1] <= 315:
+                if 300 <= mouse_aftiteling[0] <= 550 and 290 <= mouse_aftiteling[1] <= 365:
                     return main()
-                elif 200 <= mouse_aftiteling[0] <= 600 and 440 <= mouse_aftiteling[1] <= 515:
+                elif 300 <= mouse_aftiteling[0] <= 550 and 430 <= mouse_aftiteling[1] <= 505:
                     pygame.quit()
                     sys.exit()
         if event.type == pygame.QUIT:
