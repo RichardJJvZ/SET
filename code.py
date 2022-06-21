@@ -390,7 +390,7 @@ def main():
                         klaar = True
                         break
                 elif gekozenniveau == 3:
-                    if counter >= 2:
+                    if counter >= 50:
                         klaar = True
                         break
                     
