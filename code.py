@@ -5,7 +5,6 @@ Created on Mon Jun 20 08:32:03 2022
 @author: esmee
 """
 
-
 import random
 import pygame
 import sys
@@ -20,7 +19,13 @@ eigenschappen = ['colours', 'symbols', 'fillings', 'amounts']
 def main():
     """
     geaccepteerde input definieren zodat we dit als tweede eis kunnen stellen
-    aan de kaart selectie zodat het programma daar geen bug vertoont
+    aan de kaart selectie zodat het programma daar geen bug vertoont. We zetten
+    alles in 'main', zodat we de hele code opnieuw kunnen runnen wanneer
+    de speler opnieuw wil spelen.
+    
+    Returns
+    -------
+    None.
     """
     geaccepteerde_input = [pygame.K_1,pygame.K_2,pygame.K_3,pygame.K_4,
                            pygame.K_5,pygame.K_6,pygame.K_7,pygame.K_8,
@@ -31,24 +36,25 @@ def main():
         
         Attributes
         ----------
-        
+        hoeveelheid,symbool, kleur, vulling.
         
         Methods
         ----------
+        __init__ en isset.
         """
     
         def __init__(self, colour, symbol, filling, amount):
             """ Deze methode initialiseert de kaarten met alle verschillende eigenschappen
             Parameters
             ----------
-            colour : TYPE
-                DESCRIPTION.
-            symbol : TYPE
-                DESCRIPTION.
-            filling : TYPE
-                DESCRIPTION.
-            amount : TYPE
-                DESCRIPTION.
+            colour : string uit lijst
+                kleur van de kaart.
+            symbol : string uit lijst
+                symbool van de kaart.
+            filling : string uit lijst
+                vulling van de kaart.
+            amount : string uit lijst
+                hoeveelheid van de kaart.
     
             Returns
             -------
@@ -196,21 +202,20 @@ def main():
         Parameters
         ----------
         card : insantie van het type Card
-            DESCRIPTION.
     
         Returns
         -------
-        TYPE
-            DESCRIPTION.
-    
+        gif
+            Gif bestand van de bijbehorende kaart.
         """
+        
         out = ""
         attributen = card.attributen
         for i in range(4):
             out += (globals()[eigenschappen[i]])[attributen[i]]
         return "kaarten/"+out+".gif"
     
-    ### Initialise screen
+    ### Initialiseren van de display.
     pygame.init()
     window = (800,700)
     screen = pygame.display.set_mode(window)
@@ -225,17 +230,6 @@ def main():
     gekozenniveau = 0
     ###
     
-    ### card_file(card) geeft een string terug die de juiste kaart laadt
-    #test_kaart = Card(2,2,2,1)
-    #kaart = pygame.image.load(card_file(test_kaart))
-    #kaart = pygame.transform.scale(kaart, (100,200))
-    #kaartrect = kaart.get_rect()
-    #print(kaartrect)
-    
-    ### Add card to screen
-    #screen.blit(kaart,kaartrect)
-    
-    
     #startscherm
     font = pygame.font.SysFont('Roboto', 35)
     text0 = font.render('Welkom bij Set!', True, darkpink)
@@ -247,7 +241,6 @@ def main():
     screen.blit(text0, (320,100))
     screen.blit(text1, (250,150))
     
-    
     button2 = pygame.draw.rect(screen, pink, (330, 220, 150, 75))
     screen.blit(text2, (350,240))
     
@@ -257,7 +250,7 @@ def main():
     button4 = pygame.draw.rect(screen, pink, (330, 460, 150, 75))
     screen.blit(text4, (360,480))
     
-    pygame.display.flip() #hier wordt het startscherm geprojecteert op het scherm
+    pygame.display.flip() #hier wordt het startscherm geprojecteerd op het scherm
     
     while True:
         """
@@ -290,6 +283,9 @@ def main():
     clock = pygame.time.Clock()
     counter = 0
     pygame.time.set_timer(pygame.USEREVENT,100)
+    # de bovenstaande regel code geeft aan dat de counter, die we op laten lopen
+    # in het while not done stuk onderin de code, om de 0.1 seconde (100ms)
+    # wordt geupdatet. Zo ziet het vullen van de balk er vloeiend uit.
     achtergrondbar = pygame.image.load("blackbar.png")
     achtergrondbar = pygame.transform.scale(achtergrondbar,(50,300))
     achtergrondscore = pygame.image.load("zwartblok.png")
@@ -300,7 +296,8 @@ def main():
     pygame.display.flip()
     
 # lengte van het increment gekozen zodat een volle laadbar overeen komt met een
-# timer die klaar is    
+# timer die klaar is. Dit is uitgerekend aan de hand van de hoeveelheid pixels
+# die verdeeld moet worden over het aantal seconden dat bij het niveau hoort.
     if gekozenniveau == 1:
         stukjeerbij = 0.9
     elif gekozenniveau == 2:
@@ -320,12 +317,17 @@ def main():
     speelbord = startset
     
     def herladen():
-        """
-        Een korte definitie voor het herladen van de kaarten die op dit moment
-        op het speelveld liggen zodat deze later aangeroepen kan worden voor
-        beter overzicht
+        """ Een korte definitie voor het herladen van de kaarten die op dit moment
+         op het speelveld liggen zodat deze later aangeroepen kan worden voor
+         beter overzicht. Laadt de kaarten die aan de beurt zijn op de goede plek
+         op de tafel.
+        
+        Returns
+        -------
+        None.
 
-        """        
+        """
+         
         for j in range(3):
             for i in range(4):    
                 laden = pygame.image.load(card_file(startset[i+4*j]))
@@ -333,12 +335,21 @@ def main():
                 screen.blit(laden, (i*110 + 20, j*210 + 20))
             makenumbers()
         
-    herladen() #flip    
-        ### Update display
+    herladen()
     pygame.display.flip()
     
     keuze = []
     def totale_controle():
+        """ Hier checkt de computer voora alle kaarten die op de tafel liggen
+        of er een set in zit. Als er sets zijn gevonden kan de computer daar
+        later uit kiezen (de eerste van nemen).
+        
+        Returns
+        -------
+        sets : lijst
+            Lijst met mogelijke sets die op tafel liggen.
+
+        """
         sets=[]
         for i in range(10):#dus kaarten 1 t/m 10 kunnen de eerste kaart uit de controle zijn
             keuze1=i
@@ -349,27 +360,32 @@ def main():
                     if speelbord[keuze1].isset(speelbord[keuze2], speelbord[keuze3]):
                         sets.append([i+1,j+1,k+1])
         return sets
+    
     def keuze_pc():
         """
         Computer kiest de eerst mogelijke set. Opzich zou deze leeg kunnen zijn
-         en daarmee voor problemen kunnen zorgen.
+        en daarmee voor problemen kunnen zorgen.
         Daarom roepen we hem dan niet aan dus dat levert geen problemen
         """
         keuze = totale_controle()[0]
         return keuze
     
     getallen=[]
+    
     klaar = False #de timer die op is
     
     while not done: #als het spel nog niet klaar is spelen we het spel
         for event in pygame.event.get():
             if event.type == pygame.USEREVENT and not klaar:
                 if counter == 0:
-                    # Dit zorgt ervoor dat de laadbar reset. Anders blijft ie gevuld
+                    # Dit zorgt ervoor dat de laadbar reset. Anders blijft deze gevuld
                     screen.blit(achtergrondbar, (600, 100))
     
     
                 counter += 1
+                
+                # hieronder geven we de laadbar en de score weer.
+                
                 laadbar = pygame.draw.rect(screen, black, pygame.Rect(610,115,30, counter*stukjeerbij))
                 text_ss = font.render('jouw score : ' + str(score_speler), True, black)
                 text_spc = font.render('computer score : ' + str(score_pc) , True, black)
@@ -377,10 +393,11 @@ def main():
                 screen.blit(text_ss, (510,450))
                 screen.blit(text_spc, (510,500))
                 pygame.display.flip()
-                """
-                Afhankelijk van het niveau hebben we ene bepaalde tijd,
-                hier controleren we of die tijd verlopen is
-                """
+                
+                
+                # Afhankelijk van het niveau hebben we een bepaalde tijd. Bij het
+                # onderstaande controleren we of die tijd voorbij is.
+                
                 if gekozenniveau == 1:
                     if counter >= 300:
                         klaar = True
@@ -390,7 +407,7 @@ def main():
                         klaar = True
                         break
                 elif gekozenniveau == 3:
-                    if counter >= 50:
+                    if counter >= 2:
                         klaar = True
                         break
                     
@@ -419,7 +436,8 @@ def main():
                     nr = 10
                 elif event.key == pygame.K_EQUALS:
                     nr = 11
-                #We hebben nu gekozen welke kaart we willen bekijken
+                #We hebben nu gekozen welke kaart we willen bekijken door te 
+                #kijken welke knop is ingedrukt.
        
                 kaart1 = speelbord[nr]
                 if kaart1 in keuze:
@@ -476,16 +494,16 @@ def main():
                         plekken.
                         """
                         hand = vervangen()
-                        getallen=[0,1,2] #deze zouden we kunnen evrvangen als we ze op een specifieke plek willen of evt zelf willekeurig
+                        getallen=[0,1,2]
                         screen.blit(tabletop, (0,0))
                         for i in range(3):
                             speelbord[getallen[i]] = hand[i]
-                    
-                #hier zet het ding de nieuwe kaarten op de goede plek   
+                      
                     herladen()
                     #de twee variabelen voor de timer resetten
                     counter = 0
                     klaar = False
+                    
                 else:
                     """
                     Er was dus een keuze te maken door de computer.
@@ -534,18 +552,16 @@ def main():
                         speelbord[getallen[i]] = hand[i]
                     #weer nieuwe bord inladen
                     screen.blit(tabletop, (0,0))
-                    herladen()
-    #                pygame.display.flip()
-                    
+                    herladen()                    
     
                     keuze = []
                     getallen=[]
+                
                 else:
-                    print('fout')
                     counter += 10
                     """
                     De straf voor het aangeven van een verkeerde set is 1sec.
-                    Het stukje hierna is zodat de tijdsbalk niet te lang wordt
+                    Het stukje hierna is zodat de tijdsbalk niet te lang wordt.
                     """
                     if gekozenniveau == 1:
                         if counter >= 300:
@@ -568,12 +584,12 @@ def main():
     
     while done:
         """
-        Hier wordt het eindscherm gemaakt bestaande uit 3 roze balken.
-        In de eerste balk staat de score. de tweede balk is een knop waarmee
-        je terug kan gaan naar het beginscherm. De laatste knop is om het spel
-        te stoppen.
+        Hier wordt het eindscherm gemaakt bestaande uit 2 roze knoppen.
+        De eerste balk is een knop waarmee je terug kan gaan naar het beginscherm. 
+        De tweede knop is om het spel te stoppen.
         
         """
+        
         screen.fill((255, 255, 255))
         if score_pc > score_speler:
             resultaat = font.render('Helaas, verloren!', True, darkpink)
@@ -609,5 +625,6 @@ def main():
             pygame.quit()
             sys.exit()
         
-
 main()
+# de hele code staat in een functie genaamd 'main'. Opnieuw uitvoeren van deze
+#functie zorgt dus voor het opnieuw uitvoeren van het hele spel.
