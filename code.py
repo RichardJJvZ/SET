@@ -293,7 +293,6 @@ def main():
     
     
     laadbar = pygame.draw.rect(screen, pink, pygame.Rect(0,0,0,0))
-    pygame.display.flip()
     
 # lengte van het increment gekozen zodat een volle laadbar overeen komt met een
 # timer die klaar is. Dit is uitgerekend aan de hand van de hoeveelheid pixels
@@ -310,11 +309,9 @@ def main():
     tabletop = pygame.image.load("tabletop.png")
     tabletop = pygame.transform.scale(tabletop, (800,700))
     screen.blit(tabletop, (0,0))
-    pygame.display.flip()
     
     
-    startset = starten()
-    speelbord = startset
+    speelbord = starten()
     
     def herladen():
         """ Een korte definitie voor het herladen van de kaarten die op dit moment
@@ -330,13 +327,12 @@ def main():
          
         for j in range(3):
             for i in range(4):    
-                laden = pygame.image.load(card_file(startset[i+4*j]))
+                laden = pygame.image.load(card_file(speelbord[i+4*j]))
                 laden = pygame.transform.scale(laden, (100,200))
                 screen.blit(laden, (i*110 + 20, j*210 + 20))
             makenumbers()
         
     herladen()
-    pygame.display.flip()
     
     keuze = []
     def totale_controle():
@@ -520,13 +516,13 @@ def main():
                     """
                     getallen= []
                     keuze = []
-                    kaart10 = startset[keuze_pc()[0]-1]
+                    kaart10 = speelbord[keuze_pc()[0]-1]
                     keuze.append(kaart10)
                     getallen.append(keuze_pc()[0]-1)
-                    kaart11 = startset[keuze_pc()[1]-1]
+                    kaart11 = speelbord[keuze_pc()[1]-1]
                     keuze.append(kaart11)
                     getallen.append(keuze_pc()[1]-1)
-                    kaart12 = startset[keuze_pc()[2]-1]
+                    kaart12 = speelbord[keuze_pc()[2]-1]
                     keuze.append(kaart12)
                     getallen.append(keuze_pc()[2]-1)
                     score_pc += 1
