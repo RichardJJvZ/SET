@@ -493,8 +493,10 @@ def main():
                         kaarten op het bord leggen. Dit doenw e op de eerste 3
                         plekken.
                         """
-                        hand = vervangen()
+                        hand = aanvullen()
                         getallen=[0,1,2]
+                        for i in range(3):
+                            aflegstapel.append(speelbord[i])
                         screen.blit(tabletop, (0,0))
                         for i in range(3):
                             speelbord[getallen[i]] = hand[i]
